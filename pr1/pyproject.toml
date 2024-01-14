@@ -1,0 +1,29 @@
+[project]
+name = "pr1"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "rerorero", email = "nato9598@hotmail.co.jp" }
+]
+dependencies = [
+    "transformers>=4.36.2",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[project.scripts]
+hello = "pr1:hello"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pr1"]
