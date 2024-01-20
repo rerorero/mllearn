@@ -1,3 +1,6 @@
 # pr1
 
-Describe your project here.
+```
+. .venv/bin/activate
+rye sync
+```

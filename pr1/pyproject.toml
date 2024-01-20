@@ -9,12 +9,16 @@ dependencies = [
     "transformers>=4.36.2",
     "pandas>=2.0.3",
     "torch>=2.1.2",
+    "datasets>=2.16.1",
+    "huggingface_hub>=0.20.2",
+    "matplotlib>=3.7.4",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
 
 [project.scripts]
 hello = "pr1.hello:main"
+token = "pr1.token:main"
 
 [build-system]
 requires = ["hatchling"]
