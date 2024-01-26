@@ -26,7 +26,8 @@ class TwoLayerNet:
 
     def loss(self, x, t):
         y = self.predict(x)
-        return self.last_layer.forward(y, t)
+        loss = self.last_layer.forward(y, t)
+        return loss
 
     def accuracy(self, x, t):
         y = self.predict(x)
@@ -65,60 +66,52 @@ class TwoLayerNet:
 
         return grads
 
-
-def main():
-    # 確率的勾配降下法
-    # 確率的に無作為に選ばれたデータに対して勾配を求め、パラメータを更新する
+def gradient_check():
     (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+    network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+    x_batch = x_train[:3]
+    y_batch = t_train[:3]
+    grad_numerical = network.num_grad(x_batch, y_batch)
+    grad_backprop = network.gradient(x_batch, y_batch)
+    for key in grad_numerical.keys():
+        diff = np.average(np.abs(grad_backprop[key] - grad_numerical[key]))
+        print(key + ":" + str(diff))
 
+def train():
+    (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+    network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
+    iter_num = 10000
+    train_size = x_train.shape[0]
+    batch_size = 100
+    learning_rate = 0.1
     train_loss_list = []
     train_acc_list = []
     test_acc_list = []
-
-    # ハイパーパラメータ
-    iters_num = 10 # 繰り返し回数
-    train_size = x_train.shape[0]
-    batch_size = 100 # バッチサイズ
-    learning_rate = 0.1
-    # 1エポックあたりの繰り返し数
     iter_per_epoch = max(train_size / batch_size, 1)
 
-    network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
-
-    for i in range(iters_num):
+    for i in range(iter_num):
         # ミニバッチ(ランダムに取得したで-た)の取得
         batch_mask = np.random.choice(train_size, batch_size)
         x_batch = x_train[batch_mask]
         y_batch = t_train[batch_mask]
 
-        # 勾配の計算
-        grad = network.num_grad(x_batch, y_batch)
+        # 誤差逆伝播法によって勾配を求める
+        grad = network.gradient(x_batch, y_batch)
 
         # パラメータの更新
         for key in ("W1", "b1", "W2", "b2"):
             network.params[key] -= learning_rate * grad[key]
 
-        # 学習経過の記録
         loss = network.loss(x_batch, y_batch)
         train_loss_list.append(loss)
 
-        # 1エポックごとに認識精度を計算
         if i % iter_per_epoch == 0:
             train_acc = network.accuracy(x_train, t_train)
             test_acc = network.accuracy(x_test, t_test)
             train_acc_list.append(train_acc)
             test_acc_list.append(test_acc)
-            print("train acc, test acc | " + str(train_acc) + ", " + str(test_acc))
+            print(f"train acc, test acc | {train_acc}, {test_acc}")
 
-    # グラフの描画
-    markers = {'train': 'o', 'test': 's'}
-    # x = np.arange(len(train_acc_list))
-    # plt.plot(x, train_acc_list, label='train acc')
-    # plt.plot(x, test_acc_list, label='test acc', linestyle='--')
-    # plt.xlabel("iter")
-    # plt.ylabel("accuracy")
-    # plt.ylim(0, 1.0)
-    # plt.legend(loc='lower right')
-    # plt.show()
-
-
+def main():
+    # gradient_check()
+    train()
