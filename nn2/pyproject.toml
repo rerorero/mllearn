@@ -1,0 +1,29 @@
+[project]
+name = "nn2"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "rerorero", email = "nato9598@hotmail.co.jp" }
+]
+dependencies = [
+    "numpy>=1.26.3",
+]
+readme = "README.md"
+requires-python = ">= 3.11"
+
+[project.scripts]
+hello = "nn2:hello"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nn2"]
