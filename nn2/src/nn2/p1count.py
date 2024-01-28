@@ -48,9 +48,16 @@ def main():
     # most_similar('you', word_to_id, id_to_word, C, top=5)
 
     W = ppmi(C)
-    np.set_printoptions(precision=3)
-    print('covariance matrix')
-    print(C)
-    print('-'*50)
-    print('PPMI')
-    print(W)
+
+    # SVD (Singular Value Decomposition)
+    # 特異値分解=ベクトル固有値分解の正方でない行列版
+    # とある行列に対して、ベクトルを掛けても向きが変わらないようなベクトルのことを固有ベクトルと呼ぶ Ax = λx のとき λをAの固有値、xをλに対する固有ベクトルと呼ぶ
+    # https://www.momoyama-usagi.com/entry/math-linear-algebra15
+    # https://www.headboost.jp/docs/linear-algebra-for-programmers/factorization/eigen/
+    # https://qiita.com/KodaiS/items/b72ed968c480ee0f6aef
+    U, S, V = np.linalg.svd(W)
+    print(C[0])
+    print(W[0])
+    print(U[0])
+    print(U[0, :2])
+

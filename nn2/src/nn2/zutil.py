@@ -27,8 +27,8 @@ def cos_similarity(x, y, eps=1e-8):
 # 相互情報量
 # the carのtheのように、theが出現するときにcarも出現することが多い。しかし
 # カウントベースの手法ではcarはdriveよりもtheとの共起回数が多いため、theの
-# 方が共起してしまう。そこで、corpusの中でtheとcarがどれくらい出現するかの
-# 比率で正規化することで、carとdriveの共起回数を正しく評価することができる。
+# 方が関連性が強いと判断してしまう。そこでthe,car,driveがどれくらい出現するかの
+# 比率で正規化することで、carとdriveの関連性をを正しく評価することができる。
 # P(a) = コーパス内でaが起こる確率
 # PMI(x, y) = log2(P(x, y) / P(x)P(y))
 def ppmi(C, verbose=False, eps=1e-8):
@@ -49,3 +49,42 @@ def ppmi(C, verbose=False, eps=1e-8):
                     print(f'{100*cnt/total:.1f} done')
 
     return M
+
+def create_co_matrix(corpus, vocab_size, window_size=1):
+    corpus_size = len(corpus)
+    co_matrix = np.zeros((vocab_size, vocab_size), dtype=np.int32)
+    for idx, word_id in enumerate(corpus):
+        for i in range(1, window_size+1):
+            left_idx = idx - i
+            right_idx = idx + i
+            if left_idx >= 0:
+                left_word_id = corpus[left_idx]
+                co_matrix[word_id, left_word_id] += 1
+            if right_idx < corpus_size:
+                right_word_id = corpus[right_idx]
+                co_matrix[word_id, right_word_id] += 1
+    return co_matrix
+
+def most_similar(query, word_to_id, id_to_word, word_matrix, top=5):
+    if query not in word_to_id:
+        print(f'{query} is not found')
+        return
+
+    print(f'\n[query] {query}')
+    query_id = word_to_id[query]
+    query_vec = word_matrix[query_id]
+
+    vacab_size = len(id_to_word)
+    similarity = np.zeros(vacab_size)
+    for i in range(vacab_size):
+        similarity[i] = cos_similarity(word_matrix[i], query_vec)
+
+    count = 0
+    for i in (-1 * similarity).argsort():
+        if id_to_word[i] == query:
+            continue
+        print(f'{id_to_word[i]}: {similarity[i]}')
+
+        count += 1
+        if count >= top:
+            return
