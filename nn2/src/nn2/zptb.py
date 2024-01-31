@@ -8,7 +8,7 @@ try:
 except ImportError:
     raise ImportError('Use Python3!')
 import pickle
-import numpy as np
+from trainer.np import *
 
 
 url_base = 'https://raw.githubusercontent.com/tomsercu/lstm/master/data/'

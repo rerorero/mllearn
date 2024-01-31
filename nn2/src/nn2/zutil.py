@@ -1,4 +1,4 @@
-import numpy as np
+from trainer.np import *
 
 def preprocess(text):
     text = text.lower()
@@ -88,3 +88,49 @@ def most_similar(query, word_to_id, id_to_word, word_matrix, top=5):
         count += 1
         if count >= top:
             return
+
+
+def convert_one_hot(corpus, vocab_size):
+    N = corpus.shape[0]
+    if corpus.ndim == 1:
+        one_hot = np.zeros((N, vocab_size), dtype=np.int32)
+        for idx, word_id in enumerate(corpus):
+            one_hot[idx, word_id] = 1
+
+    elif corpus.ndim == 2:
+        C = corpus.shape[1]
+        one_hot = np.zeros((N, C, vocab_size), dtype=np.int32)
+        for idx_1, word_ids in enumerate(corpus):
+            for idx_2, word_id in enumerate(word_ids):
+                one_hot[idx_1, idx_2, word_id] = 1
+
+    return one_hot
+
+def softmax(x):
+    if x.ndim == 2:
+        x = x - x.max(axis=1, keepdims=True)
+        x = np.exp(x)
+        x /= x.sum(axis=1, keepdims=True)
+    elif x.ndim == 1:
+        x = x - np.max(x)
+        x = np.exp(x) / np.sum(np.exp(x))
+
+    return x
+
+def cross_entropy_error(y, t):
+    if y.ndim == 1:
+        t = t.reshape(1, t.size) # 1次元の場合は2次元に変換
+        y = y.reshape(1, y.size)
+
+    # 教師データがone-hot-vectorの場合、正解ラベルのインデックスに変換
+    if t.size == y.size:
+        t = t.argmax(axis=1)
+
+    batch_size = y.shape[0]
+    delta = 1e-7 # log(0)は-infになるので微小な値を足しておく
+    # one-hot encoding の場合t=0（偽）だと交差エントロピー誤差は0になるので、無視できる。
+    # そのため、正解ラベルのインデックスのみを取り出すことで、交差エントロピー誤差を計算できる
+    # batch_size=5のときラベル表現の場合、ｔは[2,7,0,9,4]のように正解ラベルのインデックスのみが入っている
+    # y[np.arange(batch_size), t]はy[0,2], y[1,7], y[2,0], y[3,9], y[4,4]のように
+    # 正解ラベルのインデックスに対応する出力を抽出することができる
+    return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size

@@ -8,6 +8,9 @@ authors = [
 dependencies = [
     "numpy>=1.26.3",
     "scikit-learn>=1.4.0",
+    "matplotlib>=3.8.2",
+    "cupy-cuda12x>=13.0.0",
+    "PyQt5>=5.15.10",
 ]
 readme = "README.md"
 requires-python = ">= 3.11"

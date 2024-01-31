@@ -1,4 +1,4 @@
-from .p2ptb import main
+from .p4cbow import main
 
 def hello():
     main()
