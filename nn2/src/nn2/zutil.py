@@ -1,4 +1,5 @@
 from trainer.np import *
+import collections
 
 def preprocess(text):
     text = text.lower()
@@ -134,3 +135,26 @@ def cross_entropy_error(y, t):
     # y[np.arange(batch_size), t]はy[0,2], y[1,7], y[2,0], y[3,9], y[4,4]のように
     # 正解ラベルのインデックスに対応する出力を抽出することができる
     return -np.sum(np.log(y[np.arange(batch_size), t] + 1e-7)) / batch_size
+
+class UnigramSampler:
+    def __init__(self, corpus, power, sample_size):
+        self.sample_size = sample_size
+        self.vocab_size = None
+        self.word_p = None
+
+        counts = collections.Counter()
+        for word_id in corpus:
+            counts[word_id] += 1
+        vocab_size = len(counts)
+        self.vocab_size = vocab_size
+
+        self.word_p = np.zeros(vocab_size)
+        for i in range(vocab_size):
+            self.word_p[i] = counts[i]
+        self.word_p = np.power(self.word_p, power)
+        self.word_p /= np.sum(self.word_p)
+
+    def get_negative_sample(self, target):
+        batch_size = target.shape[0]
+        # 速度優先、targetが含まれる場合がある
+        return np.random.choice(self.vocab_size, size=(batch_size, self.sample_size),
