@@ -1,0 +1,32 @@
+[project]
+name = "transformer"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "rerorero", email = "nato9598@hotmail.co.jp" }
+]
+dependencies = [
+    "scikit-learn>=1.4.0",
+    "torch>=2.2.0",
+    "matplotlib>=3.8.2",
+    "torchtext>=0.17.0",
+]
+readme = "README.md"
+requires-python = ">= 3.11"
+
+[project.scripts]
+hello = "transformer:hello"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/transformer"]
