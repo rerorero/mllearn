@@ -12,9 +12,8 @@ from transformer.path import (
 )
 from transformer.transformer import Transformer
 from transformer.dataset import KfttDataset
-from utils.evaluation.bleu import BleuScore
-from utils.text.text import tensor_to_text, text_to_tensor
-from utils.text.vocab import get_vocab
+from transformer.evaluation import BleuScore
+from transformer.text import tensor_to_text, text_to_tensor, get_vocab
 
 
 class Trainer:
@@ -135,7 +134,7 @@ class Trainer:
         for i, (src, tgt) in enumerate(test_data_loader):
             src = src.to(self.device)
             tgt = tgt.to(self.device)
-            loss, _, bleu_score = trainer.val_step(src, tgt)
+            loss, _, bleu_score = self.val_step(src, tgt)
             src = src.to("cpu")
             tgt = tgt.to("cpu")
 
@@ -145,7 +144,7 @@ class Trainer:
         return test_losses, test_bleu_scores
 
 
-if __name__ == "__main__":
+def train():
 
     """
     1.define path & create vocab
@@ -232,8 +231,6 @@ if __name__ == "__main__":
     )
     val_loader = DataLoader(dataset=val_dataset, batch_size=batch_size, shuffle=True)
 
-    TEST_SRC_CORPUS_PATH
-    TEST_TGT_CORPUS_PATH
     test_dataset = KfttDataset(
         TEST_SRC_CORPUS_PATH,
         TEST_TGT_CORPUS_PATH,
