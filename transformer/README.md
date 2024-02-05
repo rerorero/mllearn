@@ -16,3 +16,5 @@ https://zenn.dev/skypenguins/articles/a7b4cfee63b67c
 * selective-second-order-with-skips - 直前の単語とそれ以前の単語一個ずつの2単語のみに注目
 * 複数単語の特徴量を出す -> 入力が単語、出力が組み合わせとなるNNで学習
 * 位置エンコーディングで二単語間の距離を反映する。同じ単語でも距離によって特徴量が変わる（あまりよくわかってない）
+
+https://qiita.com/shingo_morita/items/43000991d04413136d62
