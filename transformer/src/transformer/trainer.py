@@ -162,7 +162,7 @@ def train():
     tgt_vocab = get_vocab(TRAIN_TGT_CORPUS_PATH, vocab_size=20000)
 
     """
-    2.Define Parameters # TODO: from arguement or config file(hydra)
+    2.Define Parameters
     """
     src_vocab_size = len(src_vocab)
     tgt_vocab_size = len(tgt_vocab)
