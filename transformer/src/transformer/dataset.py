@@ -3,6 +3,7 @@ from typing import Callable
 from torch import Tensor
 from torch.utils.data import Dataset
 
+# https://qiita.com/tetsuro731/items/d64b9bbb8de6874b7064
 class KfttDataset(Dataset):
     def __init__(
         self,

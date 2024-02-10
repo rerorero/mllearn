@@ -16,6 +16,7 @@ requires-python = ">= 3.11"
 
 [project.scripts]
 train = "transformer:do_train"
+predict = "transformer:do_predict"
 
 [build-system]
 requires = ["hatchling"]

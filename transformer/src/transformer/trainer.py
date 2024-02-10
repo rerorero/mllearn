@@ -38,6 +38,7 @@ class Trainer:
     def train_step(
         self, src: torch.Tensor, tgt: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor, float]:
+        # train()は学習と推論で挙動を変える層の挙動を切り替える(学習時にはDropoutを有効にするなど)
         self.net.train()
         output = self.net(src, tgt)
 
@@ -66,6 +67,7 @@ class Trainer:
     def val_step(
         self, src: torch.Tensor, tgt: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor, float]:
+        # eval()は学習と推論で挙動を変える層の挙動を切り替える(推論時にはDropoutを無効にするなど)
         self.net.eval()
         output = self.net(src, tgt)
 
